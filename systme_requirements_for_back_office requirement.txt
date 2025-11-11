@@ -1,0 +1,299 @@
+SHELoans Back Office Requirements
+Introduction
+
+The SHELoans module as part of the Shebnks mobile application requires a back office that will be used by administrators, super user, and the general DCA staff with authorization to access it in order to get status updates on how the system is doing and also to make fundamental loan decisions in the system.
+
+Graphical Representation of the Proposed System
+
+(Note: The referenced diagram or visual in the document appears to be missing or not rendered in text form.)
+
+Failed
+
+Authentication
+
+Dashboard Login
+
+Success
+
+User Type and Capabilities
+
+User Capabilities
+
+View all the financial reports regarding loan repayment and disbursement
+
+View all the users’ loan profiles
+
+Award and deny loans
+
+Alter the loan profile of a user
+
+Administrator Capabilities
+
+View all the financial reports regarding loan module
+
+View all the users’ loan profiles
+
+Award and deny loans
+
+Alter the loan profile of a user
+
+Manage security clearance of the dashboard
+
+Default (Staff) Capabilities
+
+View all the financial reports regarding loan repayment and disbursement
+
+View all the users’ loan profiles
+
+View the profile of a user
+
+Owner / Superuser
+
+(No specific content was listed directly under this header, but roles are defined later.)
+
+System Design Requirements
+Authentication
+
+For authentication, two fields are needed — the email field and the password field.
+
+Requirements
+
+The email field should only allow for DCA email addresses before the form is submitted.
+
+A page for unauthorized IP addresses should be created to redirect the user to an error page when an unauthorized IP address is used to access the dashboard.
+
+Dashboard Main Page
+
+This is the main page of the system and is divided into four parts:
+
+General financial report
+
+Specific financial report
+
+Users list page
+
+Settings page
+
+Dashboard Requirements for an Administrator
+
+An administrator will carry out the user management part of the system and will only have roles specific to him/her.
+
+Requirements
+
+Ability to view the general financial report
+
+Ability to disburse or deny a loan to a user
+
+Ability to alter the loan profile of a user
+
+Ability to upload and download documents to the SHEBnks servers
+
+Dashboard Requirements for a Staff
+
+A staff member will only be able to perform the read functions of the administrator but will not be allowed to make any changes.
+
+Requirements
+
+Ability to view general report
+
+Ability to view user profile
+
+Ability to view documents from SHEBnks servers
+
+Dashboard Requirements for a Superuser
+
+This would be the owner of the system, and he/she will have the most power on the system.
+
+Requirements
+
+Create and delete dashboard users
+
+Give dashboard users roles
+
+Be able to view the specific financial reports
+
+Ability to view the general financial report
+
+Ability to disburse or deny a loan to a user
+
+Ability to alter the loan profile of a user
+
+Ability to upload and download documents to the SHEBnks servers
+---
+
+ADDITIONAL TECHNICAL REQUIREMENTS (Added November 11, 2025)
+
+Technology Stack Recommendations
+
+Frontend (Back Office Dashboard):
+- Framework: React.js, Vue.js, or Angular
+- UI Library: Material-UI, Ant Design, or Bootstrap
+- State Management: Redux or Vuex
+- Charts/Visualizations: Chart.js, D3.js, or Recharts
+- HTTP Client: Axios or Fetch API
+- Authentication: JWT tokens with refresh token mechanism
+
+Backend API:
+- Language: Node.js (Express), Python (Django/Flask), or Java (Spring Boot)
+- API Standard: RESTful API with OpenAPI/Swagger documentation
+- Authentication: OAuth 2.0, JWT
+- Real-time Features: WebSockets or Socket.io (for notifications)
+- File Upload: Multer (Node.js) or similar
+- Job Queue: Bull (Redis-based) or RabbitMQ for background tasks
+
+Database Requirements:
+- Primary Database: PostgreSQL or MySQL
+- Tables needed: Users, Loans, Loan_applications, Repayments, Financial_reports, Audit_logs, Documents, Settings
+
+Security Enhancements:
+
+IP Whitelisting:
+- Maintain whitelist of authorized IP addresses
+- Middleware to check incoming IPs
+- Redirect unauthorized IPs to error page
+- Dynamic IP management through Superuser
+- Log unauthorized access attempts
+
+Session Management:
+- JWT tokens (15 min access, 7 day refresh)
+- Automatic logout on expiry
+- Remote session revocation
+- Track active sessions per user
+
+Password Security:
+- Min 8 chars (uppercase, lowercase, number, special char)
+- Bcrypt/Argon2 hashing
+- Password history (prevent last 5 reuse)
+- Lockout after 5 failed attempts
+
+Two-Factor Authentication:
+- TOTP-based (Google Authenticator)
+- SMS-based alternative
+- Backup codes for recovery
+
+API Security:
+- HTTPS/TLS 1.3 mandatory
+- Rate limiting
+- CORS configuration
+- SQL injection prevention
+- XSS and CSRF protection
+
+Audit Logging:
+- Log all user actions with timestamps and IPs
+- 2-year retention minimum
+- Search and filter capabilities
+- Export for compliance
+
+Additional Features Needed:
+
+Loan Approval Workflow:
+1. View pending applications with details
+2. Review documents, credit score, risk assessment
+3. Add internal comments
+4. Approve/Deny/Defer with reasons
+5. Auto-notify applicant
+6. Track disbursement status
+
+Financial Reporting:
+- Real-time updates (5 min refresh)
+- Date range filters
+- Export (PDF, Excel, CSV)
+- Scheduled reports
+- Templates: Portfolio, Repayment, Default Analysis, Revenue, Growth
+- Drill-down capabilities
+
+Document Management:
+- Multi-file upload
+- Formats: PDF, JPG, PNG, DOCX, XLSX (max 10MB)
+- In-browser preview
+- Categories: Loan docs, KYC, Reports, Compliance
+- Access control and version tracking
+- Document expiry alerts
+
+Notification System:
+- In-dashboard notifications
+- New applications, overdue payments, system alerts
+- Notification center with filters
+- Email for critical events
+
+Settings & Configuration:
+- Loan parameters (interest rates, amounts, tenure)
+- Processing fees and penalties
+- System configuration
+- Feature flags
+- API credentials (encrypted)
+
+Dashboard UI Specifications:
+- Header: Logo, notifications, user dropdown
+- Left Sidebar: Dashboard, Loans, Reports, Users, Documents, Settings, Audit
+- Main Area: Breadcrumbs, page title, content
+- Color Scheme: Purple/Pink primary, Green success, Red danger
+- Charts: Line, pie, bar, area charts for various metrics
+
+Performance Requirements:
+- Load time < 3 seconds
+- API response < 1 second
+- Report generation < 5 seconds
+- Pagination (50 records/page)
+
+Key API Endpoints Required:
+Authentication: /api/auth/login, logout, refresh-token, reset-password
+Loans: /api/loans/applications, approve, deny, active, defaulted
+Users: /api/dashboard-users (CRUD operations)
+Mobile Users: /api/users (view, suspend, activate)
+Reports: /api/reports/general, specific, custom, export
+Documents: /api/documents (upload, download, delete)
+Analytics: /api/analytics (dashboard, loans, users, revenue)
+Settings: /api/settings (get, update configurations)
+Audit: /api/audit-logs (view, export)
+
+Testing Requirements:
+- Unit testing (80% coverage)
+- Integration testing (APIs, databases)
+- UAT with DCA staff
+- Security testing (penetration, vulnerability)
+- Performance testing (100+ concurrent users)
+
+Infrastructure:
+- Cloud hosting (AWS/Azure/GCP)
+- Load balancer and auto-scaling
+- Managed database with daily backups
+- Object storage for documents (S3/Cloud Storage)
+- Monitoring (New Relic, Datadog)
+- Error tracking (Sentry)
+
+Training Deliverables:
+- User manuals (Admin and Superuser)
+- Video tutorials
+- API documentation
+- Database schema docs
+- Troubleshooting guide
+
+Success Metrics:
+- Loan approval time < 24 hours
+- Dashboard uptime 99.9%
+- Zero security breaches
+- Loan default rate < 5%
+- All staff trained and using system
+
+Compliance:
+- GDPR and local data protection laws
+- AML/KYC compliance
+- Financial regulations compliance
+- Audit trail maintenance
+- Regular security audits
+
+Mobile App Integration:
+The back office must integrate seamlessly with 6 mobile app modules:
+1. SHELoans - Loan applications and management
+2. SHEFunds - Seed fund applications
+3. SHEInsures - Health insurance services
+4. SHELearns - Financial education
+5. SHEShops - E-commerce platform
+6. SHEiQ - Financial habit analysis
+
+All modules require real-time data synchronization and comprehensive reporting.
+
+---
+END OF ENHANCED REQUIREMENTS
+Version 2.0 - November 11, 2025
